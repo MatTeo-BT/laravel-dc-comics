@@ -21,7 +21,7 @@ class ComicController extends Controller
      */
     public function show($id)
     {
-        $comic = Comic::findOrFail($id);
+        $comic = Comic::find($id);
         return view('comics.show', compact('comic'));
     }
 
@@ -30,7 +30,7 @@ class ComicController extends Controller
      */
     public function create()
     {
-        //
+        return view('comics.create');
     }
 
     /**
@@ -38,13 +38,15 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $newComic = Comic::create($data);
+        return redirect()->route('comics.show', $newComic->id);
     }
-
 
     /**
      * Show the form for editing the specified resource.
      */
+
     public function edit(string $id)
     {
         //
