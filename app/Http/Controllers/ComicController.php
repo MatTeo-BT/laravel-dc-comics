@@ -49,7 +49,7 @@ class ComicController extends Controller
         $newComic->type = $comic['type'];
         $newComic->save();
 
-        return redirect()->route('guest.movies.show', $newComic->id);
+        return redirect()->route('comics.show', $newComic->id);
     }
 
     /**
@@ -58,15 +58,34 @@ class ComicController extends Controller
 
     public function edit(string $id)
     {
-        //
+        $comic = Comic::findOrFail($id);
+        return view('comics.edit', compact('comic'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Comic $comic)
     {
-        //
+
+        $request->validate(
+            [
+                'title' => ['required', 'max:50'],
+                'description' => ['required'],
+                'thumb' => ['required', 'url:http,https'],
+                'price' => ['required'],
+                'series' => ['required', 'max:255'],
+                'sale_date' => ['required', 'max:60'],
+                'type' => ['required', 'max:60'],
+            ],
+            [
+                'title.required' => 'Please remember that "title" is required and must be less than 255 characters. Must be unique too'
+            ]
+        );
+
+        $data = $request->all();
+        $comic->update($data);
+        return redirect()->route('comics.show', $comic->id);
     }
 
     /**
